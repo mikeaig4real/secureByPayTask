@@ -48,7 +48,7 @@ MONGO_URI=mongodb://127.0.0.1:27017/securebypay?directConnection=true
 # Install dependencies
 npm install
 
-# Run 56 unit, integration, and security tests (Vitest + Supertest)
+# Run unit, integration, and security tests (Vitest + Supertest)
 npm test
 
 # Run tests in watch mode

@@ -6,9 +6,9 @@ A full stack technical assessment application built with a responsive **Flutter 
 
 ## Live Deployment
 
-- **Live Application URL**: `TBD` *(Update with live Render/Railway URL once deployed)*
-- **API Documentation**: `https://<your-app-domain>/api-docs`
-- **Health & Status**: `https://<your-app-domain>/health`
+- **Live Application URL**: https://securebypaytask.onrender.com/
+- **API Documentation (Swagger UI)**: https://securebypaytask.onrender.com/api-docs
+- **Health Check & Service Status**: https://securebypaytask.onrender.com/health
 
 ---
 
@@ -60,7 +60,7 @@ npm run dev
 npm run dev:backend
 npm run dev:frontend
 
-# 4. Run all tests across Frontend and Backend (68 total passing tests)
+# 4. Run all tests across Frontend and Backend
 npm test
 
 # 5. Build both Frontend and Backend for unified production deployment
@@ -82,7 +82,7 @@ cd backend
 # Configure environment variables
 Copy-Item .env.example .env
 
-# Run unit and integration tests (56 passing tests)
+# Run unit and integration tests
 npm test
 
 # Start the development server (runs on http://localhost:5000 with ts-node-dev)
@@ -107,10 +107,10 @@ flutter pub get
 # Configure environment variables (optional, defaults to http://localhost:5000/api)
 Copy-Item .env.example .env
 
-# Run unit and widget tests (12 passing tests)
+# Run unit and widget tests
 flutter test
 
-# Run code analyzer (0 issues)
+# Run code analyzer
 flutter analyze
 
 # Launch headless local web server on port 3000 (access from any browser tab)
@@ -171,12 +171,12 @@ The backend seeds an initial demo user matching the Figma persona on startup:
 
 ---
 
-## Test Suites (68 Total Passing Tests)
+## Test Suites
 
-- **Backend Test Suite (56 Passing)**:
+- **Backend Test Suite**:
   - Unit tests covering Zod environment validation, custom operational errors, date/currency formatters, auth services, database seeding, and rate limiting / IDOR security rules.
   - End-to-end integration tests using **Vitest** and **Supertest** covering registration, login, protected routes, and 404/health handlers.
-- **Frontend Test Suite (12 Passing)**:
+- **Frontend Test Suite**:
   - Model serialization unit tests (`UserModel`, `WalletModel`, `OverviewStatsModel`, `ShipmentModel`, `GrowthChartModel`).
   - Pure component widget tests (`StatusBadge`, `SectionHeader`, `EmptyStateWidget`, `NigeriaFlagIcon`).
   - App initialization and auth gating smoke widget tests.
@@ -220,7 +220,7 @@ secureByPayTask/
 │   │   ├── views/           # Screens (SignInView, SignUpView, DashboardView)
 │   │   └── main.dart        # Application entrypoint & AuthGate routing
 │   ├── assets/images/       # Extracted graphics and SVG icons
-│   ├── test/                # Unit and widget test suite (12 tests)
+│   ├── test/                # Unit and widget test suite
 │   ├── .env.example         # Frontend environment variables template
 │   └── pubspec.yaml         # Flutter dependencies and assets configuration
 ├── design/                  # Figma screen references and extracted design tokens

@@ -43,7 +43,13 @@ export const swaggerDocument = {
         type: 'object',
         required: ['amount'],
         properties: {
-          amount: { type: 'number', example: 50000 },
+          amount: { type: 'number', minimum: 0.01, example: 50000 },
+          currency: {
+            type: 'string',
+            enum: ['NGN', 'USD', 'GBP', 'EUR'],
+            example: 'NGN',
+            description: 'Optional currency code (defaults to wallet currency)',
+          },
         },
       },
       ApiResponse: {
@@ -123,7 +129,7 @@ export const swaggerDocument = {
             description: 'Current user profile',
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
-          401: { description: 'Unauthorized' },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
         },
       },
     },
@@ -137,6 +143,7 @@ export const swaggerDocument = {
             description: 'Overview data',
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
         },
       },
     },
@@ -144,6 +151,7 @@ export const swaggerDocument = {
       get: {
         tags: ['Dashboard'],
         summary: 'Fetch company growth chart points',
+        security: [{ BearerAuth: [] }],
         parameters: [
           {
             name: 'period',
@@ -157,6 +165,7 @@ export const swaggerDocument = {
             description: 'Chart coordinates and labels',
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
         },
       },
     },
@@ -164,11 +173,13 @@ export const swaggerDocument = {
       get: {
         tags: ['Dashboard'],
         summary: 'Fetch list of recent shipments',
+        security: [{ BearerAuth: [] }],
         responses: {
           200: {
             description: 'List of shipments',
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
         },
       },
     },
@@ -190,6 +201,8 @@ export const swaggerDocument = {
             description: 'Wallet funded successfully',
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
+          400: { description: 'Validation error (e.g. non-positive amount)' },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
         },
       },
     },
@@ -212,7 +225,44 @@ export const swaggerDocument = {
             content: { 'application/json': { schema: { $ref: '#/components/schemas/ApiResponse' } } },
           },
           400: { description: 'Already paid or insufficient balance' },
+          401: { description: 'Unauthorized - Invalid or missing Bearer token' },
           404: { description: 'Shipment not found' },
+        },
+      },
+    },
+    '/health': {
+      servers: [{ url: '/' }],
+      get: {
+        tags: ['System'],
+        summary: 'Check service health and database connection status',
+        responses: {
+          200: {
+            description: 'Service is healthy and database is connected',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    status: { type: 'string', example: 'ok' },
+                    service: { type: 'string', example: 'securebypay-backend' },
+                    database: {
+                      type: 'object',
+                      properties: {
+                        connected: { type: 'boolean', example: true },
+                        status: { type: 'string', example: 'connected' },
+                        name: { type: 'string', example: 'securebypay' },
+                      },
+                    },
+                    timestamp: { type: 'string', example: '2026-09-25T12:00:00.000Z' },
+                    uptime: { type: 'number', example: 124.5 },
+                  },
+                },
+              },
+            },
+          },
+          503: {
+            description: 'Database is degraded or disconnected',
+          },
         },
       },
     },

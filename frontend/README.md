@@ -54,10 +54,10 @@ LOG_LEVEL=info
 # 1. Install packages
 flutter pub get
 
-# 2. Run unit, model, and widget tests (12 passing tests)
+# 2. Run unit, model, and widget tests
 flutter test
 
-# 3. Analyze code quality (0 issues)
+# 3. Analyze code quality
 flutter analyze
 
 # 4. Run on Chrome (port 3000)
