@@ -40,14 +40,19 @@ export const envSchema = z.object({
   MONGO_URI: z
     .string({ required_error: 'Missing mandatory environment variable: MONGO_URI' })
     .min(1, 'Missing mandatory environment variable: MONGO_URI'),
-  MONGO_TEST_URI: z
-    .string({ required_error: 'Missing mandatory environment variable: MONGO_TEST_URI' })
-    .min(1, 'Missing mandatory environment variable: MONGO_TEST_URI')
-    .refine((val) => val.toLowerCase().includes('_test'), {
-      message: "MONGO_TEST_URI must contain '_test' in its database name to prevent accidental test contamination of production/development data.",
-    }),
+  MONGO_TEST_URI: z.string().optional(),
   MONGO_FALLBACK_URI: z.string().optional(),
   MONGO_TEST_FALLBACK_URI: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.NODE_ENV === 'test' && data.MONGO_TEST_URI) {
+    if (!data.MONGO_TEST_URI.toLowerCase().includes('_test')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['MONGO_TEST_URI'],
+        message: "MONGO_TEST_URI must contain '_test' in its database name to prevent accidental test contamination of production/development data.",
+      });
+    }
+  }
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -164,7 +169,7 @@ export const config: AppConfig = {
       return (process.env.MONGO_URI || '') as string;
     },
     get testUri() {
-      return (process.env.MONGO_TEST_URI || '') as string;
+      return (process.env.MONGO_TEST_URI || process.env.MONGO_URI || '') as string;
     },
     get fallbackUri() {
       return process.env.MONGO_FALLBACK_URI;

@@ -33,9 +33,16 @@ describe('Environment Security & Integrity Validation (Unit Tests)', () => {
     expect(() => validateEnv()).toThrow(/JWT_SECRET must be at least 16 characters/);
   });
 
-  it('should throw an error if MONGO_TEST_URI does not contain _test', () => {
+  it('should throw an error if MONGO_TEST_URI does not contain _test in test mode', () => {
+    process.env.NODE_ENV = 'test';
     process.env.MONGO_TEST_URI = 'mongodb://127.0.0.1:27017/securebypay_production';
     expect(() => validateEnv()).toThrow(/must contain '_test' in its database name/);
+  });
+
+  it('should not require MONGO_TEST_URI in production mode', () => {
+    process.env.NODE_ENV = 'production';
+    delete process.env.MONGO_TEST_URI;
+    expect(() => validateEnv()).not.toThrow();
   });
 
   it('should throw an error if DEFAULT_CURRENCY is not in supported currencies enum', () => {

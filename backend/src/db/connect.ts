@@ -46,12 +46,12 @@ export async function connectDB(isTest: boolean = false): Promise<typeof mongoos
     return mongoose;
   }
 
-  const primaryUri = isTest ? config.mongo.testUri : config.mongo.uri;
-  const fallbackUri = isTest ? config.mongo.testFallbackUri : config.mongo.fallbackUri;
+  const primaryUri = isTest ? (config.mongo.testUri || config.mongo.uri) : config.mongo.uri;
+  const fallbackUri = isTest ? (config.mongo.testFallbackUri || config.mongo.fallbackUri) : config.mongo.fallbackUri;
 
   if (!primaryUri) {
     throw new Error(
-      `[Database Error] ${isTest ? 'MONGO_TEST_URI' : 'MONGO_URI'} is not defined in environment.`
+      `[Database Error] Mandatory database connection string MONGO_URI is not defined in environment.`
     );
   }
 
