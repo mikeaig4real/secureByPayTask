@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'core/config.dart';
 import 'core/theme.dart';
 import 'stores/auth_store.dart';
 import 'stores/dashboard_store.dart';
@@ -9,6 +10,7 @@ import 'views/dashboard_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  AppConfig.initialize();
   runApp(const SecureByPayApp());
 }
 

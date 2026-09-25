@@ -64,5 +64,5 @@ flutter analyze
 flutter run -d chrome --web-port=3000 --dart-define-from-file=.env
 
 # 5. Build for production deployment (relative API for single-host hosting)
-flutter build web --release --dart-define=API_URL=/api
+flutter build web --release --dart-define=API_URL=/api --dart-define=ENVIRONMENT=production --dart-define=LOG_LEVEL=error
 ```

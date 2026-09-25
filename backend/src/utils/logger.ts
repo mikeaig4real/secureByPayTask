@@ -4,6 +4,21 @@ import { config } from '../config';
 
 export const logger = pino({
   level: config.logLevel,
+  redact: {
+    paths: [
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'req.headers["x-access-token"]',
+      'password',
+      '*.password',
+      'token',
+      '*.token',
+      'secret',
+      '*.secret',
+      'jwtSecret',
+    ],
+    censor: '***REDACTED***',
+  },
   transport:
     config.nodeEnv === 'development'
       ? {
@@ -40,8 +55,22 @@ export const httpLogger = pinoHttp({
   },
   autoLogging: {
     ignore: (req) => {
-      // Suppress logging for high-frequency health probes and static docs
-      return req.url?.startsWith('/api-docs') || req.url === '/health';
+      // Suppress logging for high-frequency health probes, swagger docs, and static SPA assets
+      const url = req.url || '';
+      return (
+        url.startsWith('/api-docs') ||
+        url === '/health' ||
+        url.endsWith('.js') ||
+        url.endsWith('.wasm') ||
+        url.endsWith('.png') ||
+        url.endsWith('.jpg') ||
+        url.endsWith('.jpeg') ||
+        url.endsWith('.ico') ||
+        url.endsWith('.json') ||
+        url.endsWith('.ttf') ||
+        url.endsWith('.woff') ||
+        url.endsWith('.woff2')
+      );
     },
   },
 });

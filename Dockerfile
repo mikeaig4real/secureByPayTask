@@ -13,7 +13,7 @@ RUN flutter pub get
 COPY frontend/ ./
 
 # Build production Web SPA bundle with /api relative routing
-RUN flutter build web --release --dart-define=API_URL=/api
+RUN flutter build web --release --dart-define=API_URL=/api --dart-define=ENVIRONMENT=production --dart-define=LOG_LEVEL=error
 
 # ==========================================
 # STAGE 2: Build Node.js TypeScript Backend

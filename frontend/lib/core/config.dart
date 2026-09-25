@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'logger.dart';
 
 class AppConfig {
@@ -17,6 +18,8 @@ class AppConfig {
     this.receiveTimeout = const Duration(seconds: 15),
   });
 
+  bool get isProduction => environment == 'production' || kReleaseMode;
+
   /// Validates the runtime configuration and returns an initialized [AppConfig].
   /// Throws [FormatException] if the environment or fallback URL is malformed.
   static AppConfig initialize() {
@@ -30,20 +33,27 @@ class AppConfig {
     );
     const rawEnv = String.fromEnvironment(
       'ENVIRONMENT',
-      defaultValue: 'development',
+      defaultValue: kReleaseMode ? 'production' : 'development',
     );
     const rawLogLevel = String.fromEnvironment(
       'LOG_LEVEL',
-      defaultValue: 'debug',
+      defaultValue: '',
     );
 
     final validatedUrl = _validateUrl(rawUrl);
+    final normalizedEnv = rawEnv.trim().toLowerCase();
+    final isProd = normalizedEnv == 'production' || kReleaseMode;
+
+    // In production, default log level is 'error' to prevent unreasonable console noise
+    final effectiveLogLevel = rawLogLevel.trim().isNotEmpty
+        ? rawLogLevel.trim().toLowerCase()
+        : (isProd ? 'error' : 'debug');
 
     final config = AppConfig(
       apiBaseUrl: validatedUrl,
       tokenStorageKey: rawTokenKey.trim().isEmpty ? 'securebypay_jwt_token' : rawTokenKey.trim(),
-      environment: rawEnv.trim().toLowerCase(),
-      logLevel: rawLogLevel.trim().toLowerCase(),
+      environment: normalizedEnv,
+      logLevel: effectiveLogLevel,
     );
 
     AppLogger.initialize(

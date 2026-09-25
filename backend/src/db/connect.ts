@@ -37,6 +37,17 @@ export function getActiveDBName(): string | undefined {
 }
 
 /**
+ * Masks credentials in a MongoDB URI to prevent leaking usernames and passwords in logs
+ */
+export function sanitizeMongoUri(uri: string): string {
+  try {
+    return uri.replace(/\/\/[^:]+:[^@]+@/, '//***:***@');
+  } catch {
+    return '***';
+  }
+}
+
+/**
  * Handles connecting to MongoDB for both production/dev and test environments.
  * Strictly prefers local MongoDB with directConnection=true, falling back to Atlas if configured.
  * Enforces that test environments target a database containing '_test'.
@@ -63,7 +74,7 @@ export async function connectDB(isTest: boolean = false): Promise<typeof mongoos
   }
 
   try {
-    logger.info(`[Database] Connecting to preferred DB: ${primaryUri}...`);
+    logger.info(`[Database] Connecting to preferred DB: ${sanitizeMongoUri(primaryUri)}...`);
     await mongoose.connect(primaryUri, {
       serverSelectionTimeoutMS: 2000,
     });
@@ -82,7 +93,7 @@ export async function connectDB(isTest: boolean = false): Promise<typeof mongoos
         );
       }
 
-      logger.info(`[Database] Falling back to fallback DB: ${fallbackUri.split('@')[1] || fallbackUri}...`);
+      logger.info(`[Database] Falling back to fallback DB: ${sanitizeMongoUri(fallbackUri)}...`);
       await mongoose.connect(fallbackUri, {
         serverSelectionTimeoutMS: 5000,
       });

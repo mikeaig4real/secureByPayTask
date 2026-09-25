@@ -12,7 +12,7 @@ enum LogLevel {
   final String label;
   const LogLevel(this.priority, this.label);
 
-  static LogLevel fromString(String? level) {
+  static LogLevel fromString(String? level, {bool isProduction = false}) {
     switch (level?.toLowerCase().trim()) {
       case 'debug':
         return LogLevel.debug;
@@ -27,7 +27,7 @@ enum LogLevel {
       case 'off':
         return LogLevel.none;
       default:
-        return kReleaseMode ? LogLevel.error : LogLevel.debug;
+        return (isProduction || kReleaseMode) ? LogLevel.error : LogLevel.debug;
     }
   }
 }
@@ -47,8 +47,9 @@ class AppLogger {
   };
 
   static void initialize({String? environment, String? configuredLevel}) {
-    isDevelopment = (environment ?? '').toLowerCase() != 'production' && !kReleaseMode;
-    currentLevel = LogLevel.fromString(configuredLevel);
+    final isProd = (environment ?? '').toLowerCase() == 'production' || kReleaseMode;
+    isDevelopment = !isProd;
+    currentLevel = LogLevel.fromString(configuredLevel, isProduction: isProd);
   }
 
   static void debug(String message, [dynamic data]) {
@@ -107,7 +108,8 @@ class AppLogger {
 
     final buffer = StringBuffer();
     buffer.writeln('[API RESPONSE] $method ${uri.path} -> Status $statusCode$timeStr');
-    if (sanitizedData != null && isLevelEnabled(LogLevel.debug)) {
+    // Only output payload bodies in development with debug enabled
+    if (sanitizedData != null && isLevelEnabled(LogLevel.debug) && isDevelopment) {
       buffer.writeln('  Output: ${_formatJson(sanitizedData)}');
     }
 
@@ -126,7 +128,8 @@ class AppLogger {
     if (data != null) {
       buffer.write(' | ${_formatJson(_sanitize(data))}');
     }
-    if (stackTrace != null) {
+    // Only print stack traces for error logs or in development mode
+    if (stackTrace != null && (isDevelopment || level == LogLevel.error)) {
       buffer.write('\n$stackTrace');
     }
 

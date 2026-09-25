@@ -1,6 +1,6 @@
 # SecureByPay Technical Assessment
 
-A full stack technical assessment application built with a responsive **Flutter Web** frontend and a **Node.js, TypeScript & Express** backend, backed by **MongoDB**. Designed for single-command fullstack deployment, enterprise security, and clean architecture (SOLID, DRY, YAGNI).
+A full stack technical assessment application built with a responsive **Flutter Web** frontend and a **Node.js, TypeScript & Express** backend, backed by **MongoDB**.
 
 ---
 
@@ -117,7 +117,7 @@ flutter analyze
 flutter run -d web-server --web-port=3000 --web-hostname=localhost --dart-define-from-file=.env
 
 # Build production static web bundle
-flutter build web --release --dart-define=API_URL=/api
+flutter build web --release --dart-define=API_URL=/api --dart-define=ENVIRONMENT=production --dart-define=LOG_LEVEL=error
 ```
 
 ---
@@ -126,11 +126,11 @@ flutter build web --release --dart-define=API_URL=/api
 
 | Security Measure | Implementation | Protection |
 | :--- | :--- | :--- |
-| **Brute-Force Protection** | `authLimiter` (20 req / 15 min) | Prevents password-guessing and credential stuffing on `/api/auth/*` |
-| **Financial Mutation Guard** | `financialLimiter` (30 req / min) | Prevents rapid-fire wallet funding or payment race conditions |
-| **General API Throttling** | `apiLimiter` (500 req / 15 min) | Shields backend services against denial-of-service attempts |
+| **Brute-Force Protection** | `authLimiter` | Prevents password-guessing and credential stuffing on `/api/auth/*` |
+| **Financial Mutation Guard** | `financialLimiter` | Prevents rapid-fire wallet funding or payment race conditions |
+| **General API Throttling** | `apiLimiter`| Shields backend services against denial-of-service attempts |
 | **IDOR & Tenant Isolation** | `payShipment` userId check | Prevents users from manipulating or paying for other tenants' shipments |
-| **Password Hashing** | `bcryptjs` with 10 salt rounds | One-way salted hashing before persistence to MongoDB |
+| **Password Hashing** | `bcryptjs` with salt rounds | One-way salted hashing before persistence to MongoDB |
 | **Input Sanitization** | `Zod` schema validation | Blocks malformed inputs, prototype poisoning, and unexpected fields |
 | **Schema & Surface Concealment** | `ENABLE_SWAGGER` environment toggle | Disables Swagger UI and activates strict Content Security Policy (CSP) in production |
 | **Database Performance** | `{ userId: 1, createdAt: -1 }` index | Prevents full collection scans during high-frequency dashboard queries |
@@ -180,6 +180,13 @@ The backend seeds an initial demo user matching the Figma persona on startup:
   - Model serialization unit tests (`UserModel`, `WalletModel`, `OverviewStatsModel`, `ShipmentModel`, `GrowthChartModel`).
   - Pure component widget tests (`StatusBadge`, `SectionHeader`, `EmptyStateWidget`, `NigeriaFlagIcon`).
   - App initialization and auth gating smoke widget tests.
+
+---
+
+## Remarks & Future Improvements
+
+- **API Domain Decoupling (BFF vs. REST Resources)**:
+  The current `/api/dashboard` routes act as a BFF (Backend-For-Frontend) layer tailored to the dashboard view. In a full production rollout with multi-page logistics and payment flows, `/shipments` and `/wallet` would be promoted to top-level REST resources (`/api/shipments`, `/api/wallet`) with dedicated services and controllers.
 
 ---
 
