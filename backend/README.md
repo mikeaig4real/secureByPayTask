@@ -8,9 +8,9 @@ The backend REST API service for SecureByPay built with Node.js, Express, TypeSc
 
 - **TypeScript Architecture**: Strict type checking with clean layered separation (Routes, Controllers, Services, Models).
 - **Security Hardening**:
-  - `authLimiter`: 20 requests per 15 minutes on login & registration endpoints to prevent brute-force attacks.
-  - `financialLimiter`: 30 requests per minute on wallet funding and shipment payments.
-  - `apiLimiter`: 500 requests per 15 minutes on general API routes.
+  - `authLimiter`: on login & registration endpoints to prevent brute-force attacks.
+  - `financialLimiter`:  on wallet funding and shipment payments.
+  - `apiLimiter`: on general API routes.
   - **IDOR Protection**: Explicit tenant verification in `payShipment` prevents cross-tenant shipment manipulation.
   - **Compound Database Indexing**: `{ userId: 1, createdAt: -1 }` on `ShipmentSchema` for optimal multi-tenant query speeds.
 - **Authentication**: JWT token-based auth with bcrypt password hashing (10 salt rounds).
@@ -70,11 +70,11 @@ npm start
 
 - `GET /health`: Health and database connection status
 - `GET /api-docs`: Swagger OpenAPI UI
-- `POST /api/auth/register`: User registration *(Rate-limited: 20 req / 15 min)*
-- `POST /api/auth/login`: User login returning JWT *(Rate-limited: 20 req / 15 min)*
+- `POST /api/auth/register`: User registration *(Rate-limited)*
+- `POST /api/auth/login`: User login returning JWT *(Rate-limited)*
 - `GET /api/auth/me`: Authenticated profile info *(Bearer token required)*
 - `GET /api/dashboard/overview`: Wallet balance and high-level metrics *(Bearer token required)*
 - `GET /api/dashboard/growth?period=Year|Month|Week`: Growth chart series data *(Bearer token required)*
 - `GET /api/dashboard/shipments`: User shipments *(Bearer token required)*
-- `POST /api/dashboard/wallet/fund`: Add funds to user wallet *(Rate-limited: 30 req / min, Bearer token required)*
-- `POST /api/dashboard/shipments/:id/pay`: Pay shipment from balance *(Tenant-isolated, Rate-limited: 30 req / min, Bearer token required)*
+- `POST /api/dashboard/wallet/fund`: Add funds to user wallet *(Rate-limited, Bearer token required)*
+- `POST /api/dashboard/shipments/:id/pay`: Pay shipment from balance *(Tenant-isolated, Rate-limited, Bearer token required)*
