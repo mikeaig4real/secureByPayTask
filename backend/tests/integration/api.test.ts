@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { describe, it, expect } from 'vitest';
 import jwt from 'jsonwebtoken';
 import { request } from '../helpers/testApp';
@@ -11,7 +12,7 @@ describe('API Integration Tests', () => {
       firstName: 'Test',
       lastName: 'User',
     },
-    config.jwtSecret
+    config.jwtSecret || crypto.randomBytes(32).toString('hex')
   );
 
   it('GET /health - should return status and database info', async () => {

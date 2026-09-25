@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { validateEnv, config } from '../../src/config';
 
@@ -5,7 +6,13 @@ describe('Environment Security & Integrity Validation (Unit Tests)', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env = { ...originalEnv };
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: 'test',
+      JWT_SECRET: crypto.randomBytes(32).toString('hex'),
+      MONGO_URI: 'mongodb://127.0.0.1:27017/securebypay_test',
+      MONGO_TEST_URI: 'mongodb://127.0.0.1:27017/securebypay_test',
+    };
   });
 
   afterEach(() => {

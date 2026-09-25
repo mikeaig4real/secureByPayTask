@@ -22,13 +22,28 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
+      - name: Start MongoDB with Replica Set
+        run: |
+          docker run -d --name mongodb -p 27017:27017 mongo:6.0 mongod --replSet rs0 --bind_ip_all
+          until docker exec mongodb mongosh --eval "db.adminCommand('ping')" --quiet; do
+            sleep 1
+          done
+          docker exec mongodb mongosh --eval "rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: '127.0.0.1:27017' }] })"
+          docker exec mongodb mongosh --eval "rs.status().ok"
+
       - name: Install backend dependencies
         working-directory: backend
         run: npm ci
 
       - name: Run backend test suite
         working-directory: backend
-        run: npm test
+        env:
+          NODE_ENV: test
+          MONGO_URI: mongodb://127.0.0.1:27017/securebypay_test?replicaSet=rs0&directConnection=true
+          MONGO_TEST_URI: mongodb://127.0.0.1:27017/securebypay_test?replicaSet=rs0&directConnection=true
+        run: |
+          export JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+          npm test
 
   frontend-tests:
     name: Frontend Tests & Lint (Flutter Web)
