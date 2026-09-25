@@ -103,7 +103,12 @@ class ApiClient {
     final cleanEndpoint = endpoint.startsWith('/') ? endpoint : '/$endpoint';
     final fullUrl = '${config.apiBaseUrl}$cleanEndpoint';
 
-    final uri = Uri.parse(fullUrl);
+    Uri uri = Uri.parse(fullUrl);
+    // Resolve relative path (e.g. /api/...) against current browser origin (Uri.base)
+    if (!uri.hasScheme) {
+      uri = Uri.base.resolveUri(uri);
+    }
+
     if (queryParams != null && queryParams.isNotEmpty) {
       return uri.replace(queryParameters: queryParams);
     }

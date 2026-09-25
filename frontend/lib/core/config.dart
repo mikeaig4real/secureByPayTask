@@ -60,10 +60,15 @@ class AppConfig {
       throw const FormatException('API base URL cannot be empty.');
     }
 
+    // Support relative paths (e.g., '/api') for unified same-origin web deployments
+    if (trimmed.startsWith('/')) {
+      return trimmed.endsWith('/') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+    }
+
     final uri = Uri.tryParse(trimmed);
     if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
       throw FormatException(
-        'Invalid API base URL: "$trimmed". Must be a valid absolute URI (e.g., http://localhost:5000/api).',
+        'Invalid API base URL: "$trimmed". Must be a valid absolute URI (e.g., http://localhost:5000/api) or a relative path (e.g., /api).',
       );
     }
 
