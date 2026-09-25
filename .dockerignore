@@ -1,0 +1,17 @@
+**/.git
+**/.gitignore
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+**/coverage
+**/.nyc_output
+**/dist
+**/build
+**/.dart_tool
+**/.flutter-plugins-dependencies
+**/.idea
+**/.vscode
+design/
+*.md
