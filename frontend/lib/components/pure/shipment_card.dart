@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../models/shipment_model.dart';
 import 'status_badge.dart';
 import 'nigeria_flag_icon.dart';
+import 'shipment_action_button.dart';
 
 class ShipmentCard extends StatefulWidget {
   final ShipmentModel shipment;
@@ -154,102 +155,129 @@ class _ShipmentCardState extends State<ShipmentCard> {
                 ),
               ),
               if (_isExpanded) ...[
-                const Divider(height: 1, color: Color(0xFFF0F2F5)),
+                Divider(
+                  height: 1,
+                  indent: cardHorizontalPadding,
+                  endIndent: cardHorizontalPadding,
+                  color: const Color(0xFFF0F2F5),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: cardHorizontalPadding,
                     vertical: isNarrow ? 12 : 14,
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         flex: isNarrow ? 5 : 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Pick Up From',
-                              style: GoogleFonts.dmSans(
-                                fontSize: isNarrow ? 10.5 : 12,
-                                color: const Color(0xFF808080),
-                              ),
-                            ),
-                            SizedBox(height: isNarrow ? 3 : 4),
-                            Row(
-                              children: [
-                                const NigeriaFlagIcon(),
-                                SizedBox(width: isNarrow ? 4 : 6),
-                                Expanded(
-                                  child: Text(
-                                    shipment.pickUp,
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: isNarrow ? 12 : 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF171717),
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                        child: Padding(
+                          padding: EdgeInsets.only(right: isNarrow ? 6 : 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Pick Up From',
+                                style: GoogleFonts.dmSans(
+                                  fontSize: isNarrow ? 10.5 : 12,
+                                  color: const Color(0xFF808080),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              SizedBox(height: isNarrow ? 3 : 4),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: isNarrow ? 1.5 : 2.5),
+                                    child: const NigeriaFlagIcon(),
+                                  ),
+                                  SizedBox(width: isNarrow ? 4 : 6),
+                                  Expanded(
+                                    child: Text(
+                                      shipment.pickUp,
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: isNarrow ? 11 : 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF171717),
+                                        height: 1.25,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: isNarrow ? 5 : 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Delivery To',
-                              style: GoogleFonts.dmSans(
-                                fontSize: isNarrow ? 10.5 : 12,
-                                color: const Color(0xFF808080),
-                              ),
-                            ),
-                            SizedBox(height: isNarrow ? 3 : 4),
-                            Row(
-                              children: [
-                                const NigeriaFlagIcon(),
-                                SizedBox(width: isNarrow ? 4 : 6),
-                                Expanded(
-                                  child: Text(
-                                    shipment.deliveryTo,
-                                    style: GoogleFonts.dmSans(
-                                      fontSize: isNarrow ? 12 : 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF171717),
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                        child: Padding(
+                          padding: EdgeInsets.only(right: isNarrow ? 6 : 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Delivery To',
+                                style: GoogleFonts.dmSans(
+                                  fontSize: isNarrow ? 10.5 : 12,
+                                  color: const Color(0xFF808080),
                                 ),
-                              ],
-                            ),
-                          ],
+                              ),
+                              SizedBox(height: isNarrow ? 3 : 4),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: isNarrow ? 1.5 : 2.5),
+                                    child: const NigeriaFlagIcon(),
+                                  ),
+                                  SizedBox(width: isNarrow ? 4 : 6),
+                                  Expanded(
+                                    child: Text(
+                                      shipment.deliveryTo,
+                                      style: GoogleFonts.dmSans(
+                                        fontSize: isNarrow ? 11 : 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: const Color(0xFF171717),
+                                        height: 1.25,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
                         flex: isNarrow ? 4 : 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Amount',
-                              style: GoogleFonts.dmSans(
-                                fontSize: isNarrow ? 10.5 : 12,
-                                color: const Color(0xFF808080),
+                        child: Padding(
+                          padding: EdgeInsets.only(right: isNarrow ? 4 : 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Amount',
+                                style: GoogleFonts.dmSans(
+                                  fontSize: isNarrow ? 10.5 : 12,
+                                  color: const Color(0xFF808080),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: isNarrow ? 3 : 4),
-                            Text(
-                              formattedAmount,
-                              style: GoogleFonts.dmSans(
-                                fontSize: isNarrow ? 13.5 : 15,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF171717),
+                              SizedBox(height: isNarrow ? 3 : 4),
+                              Text(
+                                formattedAmount,
+                                style: GoogleFonts.dmSans(
+                                  fontSize: isNarrow ? 13 : 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF171717),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(
@@ -279,7 +307,12 @@ class _ShipmentCardState extends State<ShipmentCard> {
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: Color(0xFFF0F2F5)),
+                Divider(
+                  height: 1,
+                  indent: cardHorizontalPadding,
+                  endIndent: cardHorizontalPadding,
+                  color: const Color(0xFFF0F2F5),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: cardHorizontalPadding,
@@ -323,85 +356,21 @@ class _ShipmentCardState extends State<ShipmentCard> {
                       ),
                       Row(
                         children: [
-                          OutlinedButton(
+                          ShipmentActionButton.viewMore(
                             onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFF262A48),
-                              side: const BorderSide(color: Color(0xFFD0D5DD)),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: isNarrow ? 10 : 16,
-                                vertical: isNarrow ? 4 : 6,
-                              ),
-                              minimumSize: Size(0, isNarrow ? 28 : 32),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                            ),
-                            child: Text(
-                              'View More',
-                              style: GoogleFonts.dmSans(
-                                fontSize: isNarrow ? 11 : 12,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF262A48),
-                              ),
-                            ),
+                            isNarrow: isNarrow,
                           ),
-                          SizedBox(width: isNarrow ? 6 : 10),
+                          SizedBox(width: isNarrow ? 8 : 10),
                           if (shipment.isPaid)
-                            Container(
-                              height: isNarrow ? 28 : 32,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: isNarrow ? 14 : 20),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFF0F2F5),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Paid',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: isNarrow ? 11 : 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF808080),
-                                  ),
-                                ),
-                              ),
+                            ShipmentActionButton.disabled(
+                              label: 'Paid',
+                              isNarrow: isNarrow,
                             )
                           else
-                            SizedBox(
-                              height: isNarrow ? 28 : 32,
-                              child: ElevatedButton(
-                                onPressed: widget.onPayPressed,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF262A48),
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: isNarrow ? 12 : 18),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                ),
-                                child: widget.isPaying
-                                    ? const SizedBox(
-                                        width: 14,
-                                        height: 14,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
-                                        ),
-                                      )
-                                    : Text(
-                                        'Pay Now',
-                                        style: GoogleFonts.dmSans(
-                                          fontSize: isNarrow ? 11 : 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                              ),
+                            ShipmentActionButton.payNow(
+                              onPressed: widget.onPayPressed,
+                              isNarrow: isNarrow,
+                              isLoading: widget.isPaying,
                             ),
                         ],
                       ),
