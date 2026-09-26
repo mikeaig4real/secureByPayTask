@@ -19,6 +19,9 @@ import { getCurrentISOString } from './utils/date';
 export function createApp(): Express {
   const app = express();
 
+  // Trust reverse proxy hops (e.g. Render, Heroku) to fix express-rate-limit X-Forwarded-For validation
+  app.set('trust proxy', 1);
+
   // Disable ETags to prevent 304 caching on live financial data
   app.set('etag', false);
 
@@ -71,9 +74,20 @@ export function createApp(): Express {
   const shouldServeFrontend = config.nodeEnv !== 'test' && hasFrontendBuild;
 
   if (shouldServeFrontend) {
-    app.use(express.static(frontendBuildPath, { index: false, maxAge: '1d' }));
+    app.use(
+      express.static(frontendBuildPath, {
+        index: false,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('index.html') || filePath.endsWith('flutter_service_worker.js')) {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+          } else {
+            res.setHeader('Cache-Control', 'public, max-age=86400');
+          }
+        },
+      })
+    );
 
-    // SPA fallback: return index.html for non-API client routes
+    // SPA fallback: return index.html for non-API client routes with no-cache headers
     app.get('*', (req, res, next) => {
       if (
         req.path.startsWith('/api') ||
@@ -82,6 +96,7 @@ export function createApp(): Express {
       ) {
         return next();
       }
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
       return res.sendFile(path.join(frontendBuildPath, 'index.html'));
     });
   } else {
