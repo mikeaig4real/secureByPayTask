@@ -5,6 +5,7 @@ import 'package:frontend/components/pure/section_header.dart';
 import 'package:frontend/components/pure/empty_state_widget.dart';
 import 'package:frontend/components/pure/nigeria_flag_icon.dart';
 import 'package:frontend/components/pure/shipment_action_button.dart';
+import 'package:frontend/components/pure/fund_wallet_action_button.dart';
 
 void main() {
   group('Pure Components Unit Tests', () {
@@ -149,6 +150,70 @@ void main() {
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.text('Pay Now'), findsNothing);
+    });
+
+    testWidgets('FundWalletActionButton variants render with identical sizing in equal flex and handle callbacks', (tester) async {
+      bool cancelTapped = false;
+      bool confirmTapped = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Row(
+              children: [
+                Expanded(
+                  child: FundWalletActionButton.cancel(
+                    onPressed: () => cancelTapped = true,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FundWalletActionButton.confirm(
+                    onPressed: () => confirmTapped = true,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Cancel'), findsOneWidget);
+      expect(find.text('Confirm Funding'), findsOneWidget);
+
+      final cancelSize = tester.getSize(find.byWidgetPredicate(
+        (w) => w is FundWalletActionButton && w.variant == FundWalletActionButtonVariant.outline,
+      ));
+      final confirmSize = tester.getSize(find.byWidgetPredicate(
+        (w) => w is FundWalletActionButton && w.variant == FundWalletActionButtonVariant.primary,
+      ));
+
+      expect(cancelSize.width, equals(confirmSize.width));
+      expect(cancelSize.height, equals(confirmSize.height));
+      expect(cancelSize.height, 40.0);
+
+      await tester.tap(find.text('Cancel'));
+      await tester.pump();
+      expect(cancelTapped, isTrue);
+
+      await tester.tap(find.text('Confirm Funding'));
+      await tester.pump();
+      expect(confirmTapped, isTrue);
+    });
+
+    testWidgets('FundWalletActionButton shows spinner when isLoading is true', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FundWalletActionButton.confirm(
+              isLoading: true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('Confirm Funding'), findsNothing);
     });
   });
 }

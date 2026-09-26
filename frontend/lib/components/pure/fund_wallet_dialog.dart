@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
-import 'app_button.dart';
+import 'fund_wallet_action_button.dart';
 import 'app_text_field.dart';
 
 class FundWalletDialog extends StatefulWidget {
@@ -75,11 +75,13 @@ class _FundWalletDialogState extends State<FundWalletDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 8,
       backgroundColor: AppColors.surface,
-      child: Container(
-        width: 440,
-        padding: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 440),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,21 +199,18 @@ class _FundWalletDialogState extends State<FundWalletDialog> {
               const SizedBox(height: 24),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  AppButton(
-                    text: 'Cancel',
-                    variant: AppButtonVariant.outline,
-                    height: 40,
-                    onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+                  Expanded(
+                    child: FundWalletActionButton.cancel(
+                      onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  AppButton(
-                    text: 'Confirm Funding',
-                    variant: AppButtonVariant.primary,
-                    height: 40,
-                    isLoading: _isLoading,
-                    onPressed: _handleSubmit,
+                  Expanded(
+                    child: FundWalletActionButton.confirm(
+                      isLoading: _isLoading,
+                      onPressed: _handleSubmit,
+                    ),
                   ),
                 ],
               ),
@@ -219,6 +218,7 @@ class _FundWalletDialogState extends State<FundWalletDialog> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

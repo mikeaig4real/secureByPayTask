@@ -98,7 +98,13 @@ class _AppTextFieldState extends State<AppTextField> {
               borderSide: const BorderSide(color: AppColors.redText, width: 1.5),
             ),
             prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-            prefixIcon: widget.prefixWidget ?? widget.prefixIcon,
+            prefixIcon: widget.prefixWidget ??
+                (widget.prefixIcon != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 14, right: 10),
+                        child: widget.prefixIcon,
+                      )
+                    : null),
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(
