@@ -1,11 +1,11 @@
 {
-    "name": "frontend",
-    "short_name": "frontend",
+    "name": "SecureByPay - Logistics & Payments",
+    "short_name": "SecureByPay",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#262A48",
+    "theme_color": "#262A48",
+    "description": "SecureByPay - Technical Assessment Fullstack Logistics & Payments Dashboard",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
