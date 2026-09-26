@@ -31,6 +31,7 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isWallet) {
       return Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
           color: const Color(0xFF5A65AB),
@@ -89,6 +90,7 @@ class StatCard extends StatelessWidget {
     }
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       decoration: BoxDecoration(
         color: Colors.white,

@@ -20,59 +20,72 @@ class GrowthSplineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE4E7EC)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Company Growth',
-                style: GoogleFonts.dmSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF171717),
-                ),
-              ),
-              _buildPeriodSelector(),
-            ],
-          ),
-          const SizedBox(height: 28),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 460;
+        final cardPadding = isNarrow
+            ? const EdgeInsets.symmetric(horizontal: 14, vertical: 18)
+            : const EdgeInsets.all(24);
 
-          SizedBox(
-            height: 240,
-            child: isLoading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+        return Container(
+          padding: cardPadding,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFE4E7EC)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Text(
+                      'Company Growth',
+                      style: GoogleFonts.dmSans(
+                        fontSize: isNarrow ? 14.5 : 16,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF171717),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  )
-                : (chartData == null || chartData!.values.isEmpty)
-                    ? Center(
-                        child: Text(
-                          'No growth data available',
-                          style: GoogleFonts.dmSans(
-                            fontSize: 13,
-                            color: AppColors.textMuted,
-                          ),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildPeriodSelector(isNarrow),
+                ],
+              ),
+              SizedBox(height: isNarrow ? 20 : 28),
+
+              SizedBox(
+                height: 240,
+                child: isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.5,
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                         ),
                       )
-                    : LineChart(_buildChartData()),
+                    : (chartData == null || chartData!.values.isEmpty)
+                        ? Center(
+                            child: Text(
+                              'No growth data available',
+                              style: GoogleFonts.dmSans(
+                                fontSize: 13,
+                                color: AppColors.textMuted,
+                              ),
+                            ),
+                          )
+                        : LineChart(_buildChartData(isNarrow)),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildPeriodSelector() {
+  Widget _buildPeriodSelector(bool isNarrow) {
     final periods = ['Year', 'Month', 'Week'];
 
     return Container(
@@ -89,7 +102,10 @@ class GrowthSplineChart extends StatelessWidget {
           return GestureDetector(
             onTap: () => onPeriodChanged(period),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              padding: EdgeInsets.symmetric(
+                horizontal: isNarrow ? 10 : 16,
+                vertical: isNarrow ? 5 : 6,
+              ),
               decoration: BoxDecoration(
                 color: isSelected ? Colors.white : Colors.transparent,
                 borderRadius: BorderRadius.circular(6),
@@ -106,7 +122,7 @@ class GrowthSplineChart extends StatelessWidget {
               child: Text(
                 period,
                 style: GoogleFonts.dmSans(
-                  fontSize: 12,
+                  fontSize: isNarrow ? 11 : 12,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   color: isSelected ? const Color(0xFF171717) : const Color(0xFF667085),
                 ),
@@ -118,7 +134,7 @@ class GrowthSplineChart extends StatelessWidget {
     );
   }
 
-  LineChartData _buildChartData() {
+  LineChartData _buildChartData(bool isNarrow) {
     final values = chartData!.values;
     final labels = chartData!.labels;
 
@@ -150,13 +166,13 @@ class GrowthSplineChart extends StatelessWidget {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 42,
+            reservedSize: isNarrow ? 34 : 42,
             interval: maxY > 0 ? (maxY / 5) : 200,
             getTitlesWidget: (value, meta) {
               return Text(
                 value.toInt().toString(),
                 style: GoogleFonts.dmSans(
-                  fontSize: 11,
+                  fontSize: isNarrow ? 10 : 11,
                   color: const Color(0xFF98A2B3),
                   fontWeight: FontWeight.w400,
                 ),

@@ -21,6 +21,7 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMobile = Responsive.isMobile(context);
+    final isDesktop = Responsive.isDesktop(context);
 
     return Container(
       width: double.infinity,
@@ -36,7 +37,7 @@ class AppHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          if (isMobile) ...[
+          if (!isDesktop) ...[
             IconButton(
               icon: const Icon(Icons.menu, color: Color(0xFF171717)),
               onPressed: onMenuPressed,

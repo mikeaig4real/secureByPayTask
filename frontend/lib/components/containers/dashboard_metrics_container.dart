@@ -104,6 +104,7 @@ class DashboardMetricsContainer extends StatelessWidget {
 
     final cardsGrid = isMobile
         ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               walletCard,
               const SizedBox(height: 12),
@@ -116,6 +117,7 @@ class DashboardMetricsContainer extends StatelessWidget {
           )
         : isTablet
             ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   walletCard,
                   const SizedBox(height: 14),
